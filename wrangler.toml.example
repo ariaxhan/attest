@@ -1,0 +1,47 @@
+name = "attest-example"
+main = "src/index.js"
+compatibility_date = "2025-10-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+CF_ACCOUNT_ID = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+
+[ai]
+binding = "AI"
+
+[[artifacts]]
+binding = "ARTIFACTS"
+namespace = "attest-example"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "attest-example"
+database_id = "YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "RECEIPTS"
+bucket_name = "attest-example-receipts"
+
+[[queues.producers]]
+binding = "EVENTS"
+queue = "attest-example-events"
+
+[[queues.consumers]]
+queue = "attest-example-events"
+max_batch_size = 1
+max_batch_timeout = 1
+
+[[workflows]]
+binding = "CHANGE_WORKFLOW"
+name = "attest-example-change"
+class_name = "ChangeWorkflow"
+
+[[durable_objects.bindings]]
+name = "PROJECT_STATE"
+class_name = "ProjectState"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ProjectState"]
