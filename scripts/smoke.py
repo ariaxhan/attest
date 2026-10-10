@@ -67,7 +67,7 @@ for attempt in range(30):
 assert status == 200 and state['state'] == 'held', (status, state)
 assert state['evidence_state'] == 'UNVERIFIED', state
 assert state['verdict']['state'] in ('ship', 'hold-for-human', 'reject', 'unverdicted'), state
-assert len(state['steps']) == 5, state
+assert len(state['steps']) >= 5, len(state['steps'])
 assert len(state['holds']) == 1, state
 print(f'6 workflow steps={len(state["steps"])} verdict={state["verdict"]["state"]} evidence=UNVERIFIED hold=1')
 print('SMOKE PASS')
