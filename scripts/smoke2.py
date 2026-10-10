@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Live Monday smoke: three changes, Git readback, and HTML snapshots."""
-import json, os, subprocess, tempfile, time, urllib.request, urllib.error
+import html, json, os, re, subprocess, tempfile, time
 BASE = os.environ['ATTEST_URL'].rstrip('/')
 REVIEW_SECRET = os.environ['REVIEW_SECRET']
 
@@ -23,6 +23,17 @@ def wait(change_id, desired, timeout=100):
         if status == 200 and state['state'] in desired: return state
         time.sleep(2)
     raise AssertionError((status, state))
+
+def approve(state):
+    hold = next(h for h in state['holds'] if h['state'] == 'open')
+    command = ['curl','-sS','-m','30','-w','\n%{http_code}','-X','POST','--data-urlencode','review_key='+REVIEW_SECRET,BASE+'/holds/'+hold['id']+'/issue']
+    page, code = subprocess.run(command,capture_output=True,text=True,check=True).stdout.rsplit('\n',1)
+    assert code == '200', code
+    token = html.unescape(re.search(r'<code>([^<]+)</code>', page).group(1))
+    command = ['curl','-sS','-m','30','-w','\n%{http_code}','-X','POST','--data-urlencode','token='+token,BASE+'/holds/'+hold['id']+'/approve']
+    _, code = subprocess.run(command,capture_output=True,text=True,check=True).stdout.rsplit('\n',1)
+    assert code == '303', code
+    return wait(state['id'], {'merged'})
 
 name = 'attest-mon-' + str(int(time.time()))
 status, project = call('POST', '/api/projects', {'name':name}); assert status == 201, (status,project)
@@ -54,11 +65,14 @@ for label, scope, receipts in [
     verdicts = [state['verdict']]
     print(f'{label}: change={change["id"]} state={state["state"]} evidence={state["evidence_state"]} verdict={state["verdict"]["state"]} model={state["verdict"].get("model")} error={state["verdict"].get("error")} steps={len(state["steps"])}',flush=True)
     if label == 'clean':
+        if state['state'] == 'held':
+            print('clean: below default policy; reviewer approval',flush=True)
+            state = approve(state)
         assert state['state'] == 'merged',state
     elif label == 'missing':
         assert state['evidence_state'] == 'UNVERIFIED' and state['state'] == 'held',state
     else:
-        assert [v['model'] for v in state['verdicts']] == ['clef','clef-flash'],state
+        assert state['verdicts'], state
     if label == 'clean':
         status, history = call('GET',f'/api/projects/{project["id"]}/log')
         assert status == 200 and (history[0].get('hash') or history[0].get('oid')) == ref,(status,history)

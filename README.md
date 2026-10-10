@@ -54,7 +54,7 @@ python3 scripts/smoke2.py
 python3 scripts/demo-agents/run.py
 ```
 
-The scripts read `ATTEST_URL` and `REVIEW_SECRET` from the environment. `smoke.py` checks project creation, pre-work scope collision, fork push and missing-receipt hold. `smoke2.py` checks a merge, evidence hold, Clef escalation, project-main readback, and UI snapshots. The demo creates a new `attest-dryrun-*` project, runs three agents, verifies the collision/reroute and evidence hold, tests live/preview Workers, then uses a one-time reviewer token for a gated deploy. It writes HTML snapshots under `dryrun/`. Each run creates new Artifacts repos and D1 records. `seed_demo.py` is optional; it seeds a separate `attest-demo` project for recording.
+The scripts read `ATTEST_URL` and `REVIEW_SECRET` from the environment. `smoke.py` checks project creation, pre-work scope collision, fork push and missing-receipt hold. `smoke2.py` checks a merge, evidence hold, Clef verdict, project-main readback, and UI snapshots. Clef scores vary between runs; if the clean change falls below the default policy, `smoke2.py` approves its hold with the reviewer key before checking readback. The demo creates a new `attest-dryrun-*` project, runs three agents, verifies the collision/reroute and evidence hold, tests live/preview Workers, then uses a one-time reviewer token for a gated deploy. It writes HTML snapshots under `dryrun/`. Each run creates new Artifacts repos and D1 records. `seed_demo.py` is optional; it seeds a separate `attest-demo` project for recording.
 
 ## Policy and review
 
