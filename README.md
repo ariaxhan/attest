@@ -44,7 +44,7 @@ npx wrangler secret put REVIEW_SECRET
 npx wrangler secret put DEMO_DEPLOY_TOKEN
 ```
 
-At each secret prompt, paste a different value. `REVIEW_SECRET` is an owner/reviewer key you generate; use the same value in your local shell for the test scripts. `DEMO_DEPLOY_TOKEN` is a Cloudflare API token with Worker script and workers.dev route edit permissions for the demonstration deployments. `CLOUDFLARE_API_TOKEN` remains a shell credential for Wrangler and is never a Worker binding. The deploy output prints the Worker URL. Set `ATTEST_URL` to that URL and `REVIEW_SECRET` to your locally held reviewer key, then check `curl "$ATTEST_URL/"` for `{"ok":true,"service":"attest"}`. `.env.example` lists the variable names; it contains no values.
+At each secret prompt, paste a different value. `REVIEW_SECRET` is an owner/reviewer key you generate; use the same value in your local shell for the test scripts. `DEMO_DEPLOY_TOKEN` is a Cloudflare API token with Worker script and workers.dev route edit permissions for the demonstration deployments. `CLOUDFLARE_API_TOKEN` remains a shell credential for Wrangler and is never a Worker binding. The deploy output prints the Worker URL. Set `ATTEST_URL` to that URL and `REVIEW_SECRET` to your locally held reviewer key, then check `curl "$ATTEST_URL/api/health"` for `{"ok":true,"service":"attest"}`. `.env.example` lists the variable names; it contains no values.
 
 ## Exercise the system
 
