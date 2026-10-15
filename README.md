@@ -4,6 +4,12 @@ Attest is a change control plane for parallel coding agents. Agents claim file s
 
 The public repository is a single source import commit from the contest build; the live build's development history and proof receipts are separate.
 
+## Demo
+
+[![Attest demo video](docs/demo-poster.jpg)](https://github.com/ariaxhan/attest/releases/download/demo-v1/attest-demo-final.mp4)
+
+*Watch (9:19, narrated): one job carried out on GitHub vs Attest, end to end — the booking that stops the clash, the checklist, the Clef verdict, and the one moment a person steps in. Live: https://attest.ariaxhan.workers.dev*
+
 ## Architecture
 
 | Primitive | Role |
